@@ -21,7 +21,8 @@ return new class extends Migration
             $table->timestamp('uploaded_at')->useCurrent();
 
             $table->string('pdf_password')->nullable(); // Guardar cifrada
-
+            
+            $table->softDeletes(); // <- PAPELERA
             $table->timestamps();
         });
     }
