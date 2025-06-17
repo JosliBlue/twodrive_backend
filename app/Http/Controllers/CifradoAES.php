@@ -150,16 +150,7 @@ class CifradoAES extends Controller
 
     /**
      * Obtiene información detallada sobre el sistema de cifrado AES implementado
-     *
-     * Retorna un JSON con toda la información técnica sobre:
-     * - Algoritmo y variante utilizada
-     * - Modo de operación
-     * - Características técnicas (claves, bloques, rondas)
-     * - Transformaciones criptográficas aplicadas
-     * - Formato de entrada y salida
-     * - Esquema de padding utilizado
-     * - Advertencias de seguridad
-     *
+     * 
      * @return JsonResponse Información completa del sistema de cifrado
      */
     public function info(): JsonResponse
