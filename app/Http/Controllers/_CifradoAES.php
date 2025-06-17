@@ -8,7 +8,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
-class CifradoAES extends Controller
+class _CifradoAES extends Controller
 {
     private $aesEncryption;
 
@@ -150,7 +150,7 @@ class CifradoAES extends Controller
 
     /**
      * Obtiene información detallada sobre el sistema de cifrado AES implementado
-     * 
+     *
      * @return JsonResponse Información completa del sistema de cifrado
      */
     public function info(): JsonResponse
