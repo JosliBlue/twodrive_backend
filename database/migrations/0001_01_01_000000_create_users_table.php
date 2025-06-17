@@ -21,6 +21,11 @@ return new class extends Migration
             $table->string('two_factor_code')->nullable();
             $table->timestamp('two_factor_expires_at')->nullable();
 
+            // Campos para verificación de email
+            $table->boolean('email_verified')->default(false);
+            $table->string('email_verification_code')->nullable();
+            $table->timestamp('email_verification_expires_at')->nullable();
+
             $table->timestamps();
         });
     }

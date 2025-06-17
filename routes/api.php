@@ -15,6 +15,8 @@ Route::get('/routes', [_Api::class, 'routes']);
 Route::prefix('auth')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/verify-email', [AuthController::class, 'verifyEmail']);
+    Route::post('/resend-email-verification', [AuthController::class, 'resendEmailVerification']);
     Route::post('/2fa/verify-two-factor', [AuthTwoFactorController::class, 'verify']);
 });
 

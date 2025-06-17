@@ -21,16 +21,22 @@ class User extends Authenticatable implements JWTSubject
         'two_factor_enabled',
         'two_factor_code',
         'two_factor_expires_at',
+        'email_verified',
+        'email_verification_code',
+        'email_verification_expires_at',
     ];
 
     protected $hidden = [
         'password',
         'two_factor_code',
+        'email_verification_code',
     ];
 
     protected $casts = [
         'two_factor_enabled' => 'boolean',
         'two_factor_expires_at' => 'datetime',
+        'email_verified' => 'boolean',
+        'email_verification_expires_at' => 'datetime',
     ];
 
     // Relaciones

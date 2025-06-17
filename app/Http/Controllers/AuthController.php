@@ -4,12 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\LoginLog;
+use App\Mail\TwoFactorCodeMail;
+use App\Mail\EmailVerificationMail;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use PHPOpenSourceSaver\JWTAuth\Exceptions\JWTException;
 use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 
@@ -36,16 +39,36 @@ class AuthController extends Controller
         }
 
         try {
+            // Generar código de verificación de email
+            $emailVerificationCode = rand(100000, 999999);
+
             $user = User::create([
                 'name' => $request->name,
                 'email' => $request->email,
-                'password' => Hash::make($request->password)
+                'password' => Hash::make($request->password),
+                'email_verified' => false,
+                'email_verification_code' => $emailVerificationCode,
+                'email_verification_expires_at' => now()->addMinutes(30), // 30 minutos para verificar
             ]);
+
+            // Enviar email de verificación
+            try {
+                Mail::to($user->email)->send(new EmailVerificationMail($emailVerificationCode, $user->name));
+            } catch (\Exception $mailException) {
+                // Log del error de email pero no fallar el registro
+                Log::warning('Error sending verification email: ' . $mailException->getMessage());
+            }
 
             return response()->json([
                 'status' => true,
-                'message' => 'User registered successfully',
-                'user' => $user
+                'message' => 'Usuario registrado exitosamente. Revisa tu email para verificar tu cuenta.',
+                'user' => [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'email_verified' => $user->email_verified,
+                ],
+                'email_verification_required' => true
             ], 201);
         } catch (\Exception $e) {
             return response()->json([
@@ -100,6 +123,15 @@ class AuthController extends Controller
         // Si las credenciales son correctas, obtenemos el usuario
         $user = User::where('email', $request->email)->first();
 
+        // Verificar si el email está verificado
+        if (!$user->email_verified) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Debes verificar tu email antes de iniciar sesión.',
+                'email_verification_required' => true
+            ], 403);
+        }
+
         // 2. Verificamos si el 2FA está activado para este usuario
         if ($user->two_factor_enabled) {
             // 3. Si está activado, generamos y guardamos el código de un solo uso
@@ -107,13 +139,21 @@ class AuthController extends Controller
             $user->two_factor_expires_at = now()->addMinutes(10); // El código expira en 10 minutos
             $user->save();
 
-            // 4. (Opcional pero recomendado) Enviar el código por email al usuario
-            // Mail::to($user->email)->send(new TuClaseDeMailDe2FA($user->two_factor_code));
+            // 4. Enviar el código por email al usuario
+            try {
+                Mail::to($user->email)->send(new TwoFactorCodeMail($user->two_factor_code, $user->name));
+            } catch (\Exception $mailException) {
+                Log::warning('Error sending 2FA email: ' . $mailException->getMessage());
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Error enviando código de verificación. Inténtalo de nuevo.'
+                ], 500);
+            }
 
             // 5. Devolvemos una respuesta indicando que se requiere el segundo factor
             return response()->json([
                 'status' => true,
-                'message' => 'Se requiere autenticación de dos factores.',
+                'message' => 'Se ha enviado un código de verificación a tu email.',
                 'two_factor_required' => true, // Esta bandera es clave para tu frontend
             ]);
         }
@@ -255,6 +295,146 @@ class AuthController extends Controller
             return response()->json([
                 'status' => false,
                 'message' => 'Error logging out'
+            ], 500);
+        }
+    }
+
+    /**
+     * Verify email address
+     *
+     * Este método es público y permite a los usuarios verificar su dirección de email
+     */
+    public function verifyEmail(Request $request): JsonResponse
+    {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email',
+            'verification_code' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        try {
+            $user = User::where('email', $request->email)->first();
+
+            if (!$user) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Usuario no encontrado.'
+                ], 404);
+            }
+
+            if ($user->email_verified) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'El email ya está verificado.'
+                ], 400);
+            }
+
+            if (!$user->email_verification_code || $user->email_verification_code !== $request->verification_code) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Código de verificación inválido.'
+                ], 422);
+            }
+
+            if (now()->gt($user->email_verification_expires_at)) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'El código de verificación ha expirado.'
+                ], 422);
+            }
+
+            // Verificar el email
+            $user->email_verified = true;
+            $user->email_verification_code = null;
+            $user->email_verification_expires_at = null;
+            $user->save();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Email verificado exitosamente. Ahora puedes iniciar sesión.',
+                'user' => [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'email_verified' => $user->email_verified,
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Error verificando email.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Resend email verification code
+     *
+     * Este método es público y permite reenviar el código de verificación
+     */
+    public function resendEmailVerification(Request $request): JsonResponse
+    {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        try {
+            $user = User::where('email', $request->email)->first();
+
+            if (!$user) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Usuario no encontrado.'
+                ], 404);
+            }
+
+            if ($user->email_verified) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'El email ya está verificado.'
+                ], 400);
+            }
+
+            // Generar nuevo código
+            $emailVerificationCode = rand(100000, 999999);
+            $user->email_verification_code = $emailVerificationCode;
+            $user->email_verification_expires_at = now()->addMinutes(30);
+            $user->save();
+
+            // Enviar email
+            try {
+                Mail::to($user->email)->send(new EmailVerificationMail($emailVerificationCode, $user->name));
+            } catch (\Exception $mailException) {
+                Log::warning('Error sending verification email: ' . $mailException->getMessage());
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Error enviando email de verificación.'
+                ], 500);
+            }
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Código de verificación reenviado exitosamente.'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Error reenviando código de verificación.',
+                'error' => $e->getMessage()
             ], 500);
         }
     }

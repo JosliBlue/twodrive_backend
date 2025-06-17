@@ -5,7 +5,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use App\Utils\AESEncryption;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
@@ -61,8 +60,7 @@ class AuthTwoFactorController extends Controller
         ]);
 
         try {
-            $aesEncryption = new AESEncryption();
-            $encryptedEmail = $aesEncryption->encrypt($request->email);
+            $encryptedEmail = $request->email;
 
             $user = User::where('email', $encryptedEmail)->first();
 
@@ -89,8 +87,8 @@ class AuthTwoFactorController extends Controller
                 'expires_in' => JWTAuth::factory()->getTTL() * 60,
                 'user' => [
                     'id' => $user->id,
-                    'name' => $aesEncryption->decrypt($user->name),
-                    'email' => $aesEncryption->decrypt($user->email),
+                    'name' => $user->name,
+                    'email' => $user->email,
                 ]
             ]);
         } catch (\Exception $e) {
