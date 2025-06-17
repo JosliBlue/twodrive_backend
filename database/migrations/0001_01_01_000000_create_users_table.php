@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->string('password');
-            $table->string('encryption_key'); // Clave única para cifrado de PDFs
 
             $table->boolean('two_factor_enabled')->default(false);
             $table->string('two_factor_code')->nullable();
