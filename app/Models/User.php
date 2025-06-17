@@ -24,12 +24,15 @@ class User extends Authenticatable implements JWTSubject
         'email_verified',
         'email_verification_code',
         'email_verification_expires_at',
+        'account_deletion_code',
+        'account_deletion_expires_at',
     ];
 
     protected $hidden = [
         'password',
         'two_factor_code',
         'email_verification_code',
+        'account_deletion_code',
     ];
 
     protected $casts = [
@@ -37,6 +40,7 @@ class User extends Authenticatable implements JWTSubject
         'two_factor_expires_at' => 'datetime',
         'email_verified' => 'boolean',
         'email_verification_expires_at' => 'datetime',
+        'account_deletion_expires_at' => 'datetime',
     ];
 
     // Relaciones

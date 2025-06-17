@@ -7,7 +7,14 @@ use Illuminate\Http\Request;
 class _Api extends Controller
 {
     /**
-     * api version
+     * API Version Information
+     *
+     * Endpoint Público
+     *
+     * Este método proporciona información básica sobre la versión y estado de la API.
+     *
+     * Útil para verificar el correcto funcionamiento de la API y obtener detalles
+     * sobre el entorno de ejecución, versiones de componentes y timestamp actual.
      */
     public function version()
     {
@@ -22,7 +29,14 @@ class _Api extends Controller
     }
 
     /**
-     * api routes
+     * API Routes Documentation
+     *
+     * Endpoint Público
+     *
+     * Este método lista todas las rutas disponibles en la API para verificación y documentación.
+     *
+     * Proporciona un mapeo completo de endpoints, métodos HTTP permitidos, acciones del controlador
+     * y middleware aplicado. Útil para verificar el correcto funcionamiento y configuración de rutas.
      */
     public function routes()
     {

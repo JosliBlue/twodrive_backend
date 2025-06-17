@@ -12,9 +12,13 @@ use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 class AuthTwoFactorController extends Controller
 {
     /**
-     * Activa el 2FA
+     * Enable 2FA
      *
-     * Este método debe estar protegido por el middleware 'IsUserAuth' y permite a los usuarios activar la autenticación de dos factores.
+     * Endpoint Privado
+     *
+     * Este método permite a los usuarios activar la autenticación de dos factores.
+     *
+     * Una vez iniciado sesion en el frontend solo seria un boton para activar la autenticación de dos factores.
      */
     public function enable(): JsonResponse
     {
@@ -29,9 +33,13 @@ class AuthTwoFactorController extends Controller
     }
 
     /**
-     * Desactiva el 2FA
+     * Disable 2FA
      *
-     * Este método también debe estar protegido por el middleware 'IsUserAuth' y permite a los usuarios desactivar la autenticación de dos factores.
+     * Endpoint Privado
+     *
+     * Este método permite a los usuarios desactivar la autenticación de dos factores.
+     *
+     * Una vez iniciado sesión en el frontend solo seria un boton para desactivar la autenticación de dos factores.
      */
     public function disable(): JsonResponse
     {
@@ -48,9 +56,13 @@ class AuthTwoFactorController extends Controller
     }
 
     /**
-     * Verifica el código 2FA y emite el token de acceso final.
+     * Verify 2FA code and emit jwt token.
      *
-     * Este método es público y se utiliza para verificar el código de autenticación de dos factores ingresado por el usuario.
+     * Endpoint Publico
+     *
+     * Este método se utiliza para verificar el código de autenticación de dos factores ingresado por el usuario.
+     *
+     * Este seria el paso 2 despues de querer iniciar sesion con usuario y contraseña si ya ejecuto "Enable 2FA" en una sesion anterior.
      */
     public function verify(Request $request): JsonResponse
     {

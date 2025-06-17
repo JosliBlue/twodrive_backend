@@ -26,6 +26,10 @@ return new class extends Migration
             $table->string('email_verification_code')->nullable();
             $table->timestamp('email_verification_expires_at')->nullable();
 
+            // Campos para eliminación de cuenta
+            $table->string('account_deletion_code')->nullable();
+            $table->timestamp('account_deletion_expires_at')->nullable();
+
             $table->timestamps();
         });
     }

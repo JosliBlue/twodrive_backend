@@ -14,6 +14,9 @@ class _CifradoAES extends Controller
 
     /**
      * Constructor - Instancia la clase AESEncryption
+     *
+     * Inicializa la instancia de la clase AESEncryption que contiene la implementación
+     * manual del algoritmo AES-128 para propósitos educativos y de prueba.
      */
     public function __construct()
     {
@@ -22,6 +25,13 @@ class _CifradoAES extends Controller
 
     /**
      * Cifra un texto usando AES-128
+     *
+     * Endpoint Público
+     *
+     * Este método permite cifrar un texto plano utilizando el algoritmo AES-128 implementado manualmente.
+     *
+     * Es una implementación educativa/de prueba para demostrar el funcionamiento del cifrado AES hecho a mano.
+     * NO debe utilizarse en producción debido a limitaciones de seguridad.
      *
      * @param Request $request
      * @return JsonResponse
@@ -82,6 +92,13 @@ class _CifradoAES extends Controller
 
     /**
      * Descifra un texto usando AES-128
+     *
+     * Endpoint Público
+     *
+     * Este método permite descifrar un texto previamente cifrado con el método de cifrado manual.
+     *
+     * Utiliza la implementación AES-128 hecha a mano para demostrar el proceso de descifrado.
+     * Solo funciona con textos cifrados por el método "cifrar" de este mismo controlador.
      *
      * @param Request $request
      * @return JsonResponse
@@ -150,6 +167,13 @@ class _CifradoAES extends Controller
 
     /**
      * Obtiene información detallada sobre el sistema de cifrado AES implementado
+     *
+     * Endpoint Público
+     *
+     * Este método proporciona información técnica completa sobre la implementación AES-128 manual.
+     *
+     * Incluye detalles sobre el algoritmo, limitaciones de seguridad, casos de uso recomendados
+     * y advertencias importantes sobre su uso exclusivamente educativo/de prueba.
      *
      * @return JsonResponse Información completa del sistema de cifrado
      */

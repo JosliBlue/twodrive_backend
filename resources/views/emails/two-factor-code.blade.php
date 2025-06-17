@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,25 +15,30 @@
             padding: 20px;
             background-color: #f4f4f4;
         }
+
         .container {
             background-color: #ffffff;
             padding: 30px;
             border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
         }
+
         .header {
             text-align: center;
             margin-bottom: 30px;
         }
+
         .logo {
             width: 150px;
             height: auto;
             margin-bottom: 20px;
         }
+
         h1 {
             color: #2c3e50;
             margin-bottom: 10px;
         }
+
         .code-container {
             background-color: #f8f9fa;
             border: 2px solid #007bff;
@@ -41,6 +47,7 @@
             text-align: center;
             margin: 20px 0;
         }
+
         .code {
             font-size: 32px;
             font-weight: bold;
@@ -48,6 +55,7 @@
             letter-spacing: 5px;
             font-family: 'Courier New', monospace;
         }
+
         .warning {
             background-color: #fff3cd;
             border: 1px solid #ffeaa7;
@@ -56,6 +64,7 @@
             margin: 20px 0;
             color: #856404;
         }
+
         .footer {
             margin-top: 30px;
             padding-top: 20px;
@@ -64,6 +73,7 @@
             color: #666;
             font-size: 14px;
         }
+
         .btn {
             display: inline-block;
             padding: 12px 24px;
@@ -75,6 +85,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <div class="header">
@@ -110,4 +121,5 @@
         </div>
     </div>
 </body>
+
 </html>

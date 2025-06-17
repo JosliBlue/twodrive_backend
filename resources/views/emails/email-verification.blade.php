@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,25 +15,30 @@
             padding: 20px;
             background-color: #f4f4f4;
         }
+
         .container {
             background-color: #ffffff;
             padding: 30px;
             border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
         }
+
         .header {
             text-align: center;
             margin-bottom: 30px;
         }
+
         .logo {
             width: 150px;
             height: auto;
             margin-bottom: 20px;
         }
+
         h1 {
             color: #2c3e50;
             margin-bottom: 10px;
         }
+
         .code-container {
             background-color: #f8f9fa;
             border: 2px solid #28a745;
@@ -41,6 +47,7 @@
             text-align: center;
             margin: 20px 0;
         }
+
         .code {
             font-size: 32px;
             font-weight: bold;
@@ -48,6 +55,7 @@
             letter-spacing: 5px;
             font-family: 'Courier New', monospace;
         }
+
         .info {
             background-color: #d1ecf1;
             border: 1px solid #bee5eb;
@@ -56,6 +64,7 @@
             margin: 20px 0;
             color: #0c5460;
         }
+
         .footer {
             margin-top: 30px;
             padding-top: 20px;
@@ -64,6 +73,7 @@
             color: #666;
             font-size: 14px;
         }
+
         .welcome {
             background-color: #d4edda;
             border: 1px solid #c3e6cb;
@@ -74,6 +84,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <div class="header">
@@ -84,7 +95,8 @@
 
         <div class="welcome">
             <h3>🎉 ¡Gracias por registrarte!</h3>
-            <p>Tu cuenta ha sido creada exitosamente. Para completar el proceso de registro y activar tu cuenta, necesitamos verificar tu dirección de email.</p>
+            <p>Tu cuenta ha sido creada exitosamente. Para completar el proceso de registro y activar tu cuenta,
+                necesitamos verificar tu dirección de email.</p>
         </div>
 
         <p>Tu código de verificación es:</p>
@@ -119,4 +131,5 @@
         </div>
     </div>
 </body>
+
 </html>
