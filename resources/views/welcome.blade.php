@@ -584,11 +584,12 @@
                 <h3 class="tech-title">Stack Tecnológico</h3>
                 <div class="tech-list">
                     <span class="tech-item">Laravel 11</span>
-                    <span class="tech-item">PHP 8.3</span>
+                    <span class="tech-item">PHP 8.2.18</span>
                     <span class="tech-item">JWT Auth</span>
                     <span class="tech-item">MySQL</span>
                     <span class="tech-item">RESTful API</span>
                     <span class="tech-item">MVC Pattern</span>
+                    <span class="tech-item">AES encryption</span>
                 </div>
             </div>
         </footer>

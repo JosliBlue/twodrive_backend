@@ -1,6 +1,8 @@
 <?php
 
 return [
+    // Llama a la clave de cifrado personalizada desde el archivo .env
+    'clave_cifrado_aes' => env('CLAVE_CIFRADO_AES'),
 
     /*
     |--------------------------------------------------------------------------
