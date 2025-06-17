@@ -1,0 +1,48 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+
+class Api extends Controller
+{
+    /**
+     * api version
+     */
+    public function version()
+    {
+        return response()->json([
+            'app_name' => env('APP_NAME'),
+            'version' => env('APP_VERSION'),
+            'laravel_version' => app()->version(),
+            'php_version' => phpversion(),
+            'environment' => env('APP_ENV'),
+            'timestamp' => now()->toISOString()
+        ]);
+    }
+
+    /**
+     * api routes
+     */
+    public function routes()
+    {
+        $routes = collect(app('router')->getRoutes())->filter(function ($route) {
+            // Solo rutas del grupo 'api'
+            return $route->getAction('middleware') && in_array('api', (array) $route->getAction('middleware'));
+        })->map(function ($route) {
+            return [
+                'uri' => $route->uri(),
+                'methods' => $route->methods(),
+                'action' => $route->getActionName(),
+                'middleware' => $route->gatherMiddleware(),
+            ];
+        })->values();
+
+        // Agregar uri_base al inicio manteniendo el orden original
+        $response = $routes->prepend([
+            'uri_base' => request()->getSchemeAndHttpHost() . '/'
+        ]);
+
+        return response()->json($response);
+    }
+}
