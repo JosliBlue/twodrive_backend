@@ -349,6 +349,4 @@ class AESEncryption
         }
         return $text;
     }
-
-    
 }
