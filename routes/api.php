@@ -7,22 +7,12 @@ use App\Http\Controllers\AuthTwoFactorController;
 use App\Http\Middleware\IsUserAuth;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', [_Api::class, 'version']);
-Route::get('/routes', [_Api::class, 'routes']);
-
 // Rutas de autenticación (públicas)
 Route::prefix('auth')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login']);
     Route::post('/resend-email-verification', [AuthController::class, 'resendEmailVerification']);
     Route::post('/2fa/verify-two-factor', [AuthTwoFactorController::class, 'verify']);
-});
-
-// Rutas de cifrado AES (públicas para facilitar las pruebas)
-Route::prefix('cifrado')->group(function () {
-    Route::post('/cifrar', [_CifradoAES::class, 'cifrar']);
-    Route::post('/descifrar', [_CifradoAES::class, 'descifrar']);
-    Route::get('/info', [_CifradoAES::class, 'info']);
 });
 
 Route::middleware([IsUserAuth::class])->group(function () {
@@ -43,3 +33,16 @@ Route::middleware([IsUserAuth::class])->group(function () {
         Route::post('/2fa/disable', [AuthTwoFactorController::class, 'disable']);
     });
 });
+
+// RUTAS API DE INFORMACION
+Route::get('/', [_Api::class, 'version']);
+Route::get('/routes', [_Api::class, 'routes']);
+
+// RUTAS API DE TESTING (solo disponibles en entorno de desarrollo)
+if (app()->environment('local')) {
+    Route::prefix('cifrado')->group(function () {
+        Route::post('/cifrar', [_CifradoAES::class, 'cifrar']);
+        Route::post('/descifrar', [_CifradoAES::class, 'descifrar']);
+        Route::get('/info', [_CifradoAES::class, 'info']);
+    });
+}
