@@ -9,7 +9,7 @@ use Illuminate\Http\{JsonResponse, Request};
 use Illuminate\Support\Facades\{Log, Mail, Validator};
 use PHPOpenSourceSaver\JWTAuth\{Exceptions\JWTException, Facades\JWTAuth};
 
-class AuthController extends Controller
+class AuthController
 {
     private $aes;
     public function __construct()

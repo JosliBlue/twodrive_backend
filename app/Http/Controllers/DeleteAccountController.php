@@ -10,7 +10,7 @@ use Illuminate\Http\{JsonResponse, Request};
 use Illuminate\Support\Facades\{Log, Mail, Validator};
 use PHPOpenSourceSaver\JWTAuth\{Exceptions\JWTException, Facades\JWTAuth};
 
-class DeleteAccountController extends Controller
+class DeleteAccountController
 {
     private $aes;
     public function __construct()

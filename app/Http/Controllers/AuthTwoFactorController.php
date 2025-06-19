@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 
-class AuthTwoFactorController extends Controller
+class AuthTwoFactorController
 {
     private $aes;
     public function __construct()

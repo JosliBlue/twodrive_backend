@@ -8,7 +8,7 @@ use Illuminate\Http\{JsonResponse, Request};
 use Illuminate\Support\Facades\Validator;
 use PHPOpenSourceSaver\JWTAuth\{Exceptions\JWTException, Facades\JWTAuth};
 
-class UserController extends Controller
+class UserController
 {
     private $aes;
     public function __construct()

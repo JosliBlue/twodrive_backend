@@ -8,7 +8,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
-class _CifradoAES extends Controller
+class _CifradoAES
 {
     private $aesEncryption;
 

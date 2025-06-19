@@ -8,7 +8,7 @@ use App\Utils\AESEncryption;
 use Illuminate\Http\{JsonResponse, Request};
 use Illuminate\Support\Facades\{Log, Mail, Validator};
 
-class VerifyAccountController extends Controller
+class VerifyAccountController
 {
     private $aes;
     public function __construct()

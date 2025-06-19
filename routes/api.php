@@ -27,7 +27,7 @@ Route::post('/2fa/verify-two-factor', [AuthTwoFactorController::class, 'verify']
 
 Route::middleware([IsUserAuth::class])->group(function () {
 
-    Route::post('auth/logout', [AuthController::class, 'logout']);
+    Route::get('auth/logout', [AuthController::class, 'logout']);
 
     // Rutas de usuario
     Route::prefix('user')->group(function () {
@@ -37,19 +37,19 @@ Route::middleware([IsUserAuth::class])->group(function () {
 
     // Rutas de verificación de cuenta
     Route::prefix('account')->group(function () {
-        Route::post('/request-email-verification', [VerifyAccountController::class, 'requestEmailVerification']);
-        Route::post('/resend-email-verification', [VerifyAccountController::class, 'resendEmailVerification']);
+        Route::get('/request-email-verification', [VerifyAccountController::class, 'requestEmailVerification']);
+        Route::get('/resend-email-verification', [VerifyAccountController::class, 'resendEmailVerification']);
         Route::post('/verify-email', [VerifyAccountController::class, 'verifyEmail']);
 
         // Rutas de eliminación de cuenta
-        Route::post('/request-deletion', [DeleteAccountController::class, 'requestAccountDeletion']);
+        Route::get('/request-deletion', [DeleteAccountController::class, 'requestAccountDeletion']);
         Route::post('/confirm-deletion', [DeleteAccountController::class, 'confirmAccountDeletion']);
     });
 
     // Rutas de Two Factor Authentication
     Route::prefix('2fa')->group(function () {
-        Route::post('/enable', [AuthTwoFactorController::class, 'enable']);
-        Route::post('/disable', [AuthTwoFactorController::class, 'disable']);
+        Route::get('/enable', [AuthTwoFactorController::class, 'enable']);
+        Route::get('/disable', [AuthTwoFactorController::class, 'disable']);
     });
 });
 

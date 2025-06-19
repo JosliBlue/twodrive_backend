@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class _Api extends Controller
+class _Api
 {
     /**
      * API Version Information
