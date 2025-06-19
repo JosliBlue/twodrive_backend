@@ -17,7 +17,7 @@ return new class extends Migration
 
             $table->ipAddress('ip_address');
             $table->string('user_agent')->nullable();
-            $table->enum('status', ['success', 'failed']);
+            $table->string('status');
             $table->timestamp('logged_in_at')->useCurrent();
 
             $table->timestamps();

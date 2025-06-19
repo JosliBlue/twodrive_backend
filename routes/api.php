@@ -5,7 +5,6 @@ use App\Http\Controllers\_CifradoAES;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AuthTwoFactorController;
 use App\Http\Middleware\IsUserAuth;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [_Api::class, 'version']);

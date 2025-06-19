@@ -29,7 +29,7 @@ return [
         /*
          * Description rendered on the home page of the API documentation (`/docs/api`).
          */
-        'description' => 'api gigaprosita para probar two drive',
+        'description' => 'Tu solución para la gestión segura de documentos PDF. Esta API RESTful, construida con Laravel 11, JWT y encriptación AES, ofrece control completo de archivos, usuarios y permisos.',
     ],
 
     /*

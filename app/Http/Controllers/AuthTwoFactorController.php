@@ -5,12 +5,18 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Utils\AESEncryption;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 
 class AuthTwoFactorController extends Controller
 {
+    private $aes;
+    public function __construct()
+    {
+        $this->aes = new AESEncryption();
+    }
     /**
      * Enable 2FA
      *
@@ -28,7 +34,7 @@ class AuthTwoFactorController extends Controller
 
         return response()->json([
             'status' => true,
-            'message' => 'Two-factor authentication has been enabled.'
+            'message' => 'La autenticación de dos factores ha sido activada',
         ]);
     }
 
@@ -51,7 +57,7 @@ class AuthTwoFactorController extends Controller
 
         return response()->json([
             'status' => true,
-            'message' => 'Two-factor authentication has been disabled.'
+            'message' => 'La autenticación de dos factores ha sido desactivada.'
         ]);
     }
 
@@ -72,16 +78,20 @@ class AuthTwoFactorController extends Controller
         ]);
 
         try {
-            $encryptedEmail = $request->email;
+            $user = User::where('email', $this->aes->encrypt($request->email))->first();
 
-            $user = User::where('email', $encryptedEmail)->first();
-
-            if (!$user || is_null($user->two_factor_code) || $request->two_factor_code !== $user->two_factor_code) {
-                return response()->json(['status' => false, 'message' => 'Invalid two-factor code.'], 422);
+            if (!$user || is_null($user->two_factor_code) || $this->aes->encrypt($request->two_factor_code) !== $user->two_factor_code) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Código de verificación inválido.'
+                ], 422);
             }
 
             if (now()->gt($user->two_factor_expires_at)) {
-                return response()->json(['status' => false, 'message' => 'Two-factor code has expired.'], 422);
+                return response()->json([
+                    'status' => false,
+                    'message' => 'El código de verificación ha expirado.'
+                ], 422);
             }
 
             // Limpiamos los campos 2FA después de un uso exitoso
@@ -94,19 +104,18 @@ class AuthTwoFactorController extends Controller
 
             return response()->json([
                 'status' => true,
-                'access_token' => $token,
-                'token_type' => 'bearer',
-                'expires_in' => JWTAuth::factory()->getTTL() * 60,
+                'token' => $token,
                 'user' => [
                     'id' => $user->id,
-                    'name' => $user->name,
                     'email' => $user->email,
+                    'email_verified' => $user->email_verified ? true : false,
+                    'two_factor_enabled' => $user->two_factor_enabled ? true : false,
                 ]
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'status' => false,
-                'message' => 'Error verifying two-factor code.',
+                'message' => 'Error al verificar el código de autenticación de dos factores',
                 'error' => $e->getMessage()
             ], 500);
         }
