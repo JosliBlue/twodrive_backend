@@ -18,37 +18,38 @@
             background: #0a0f1c;
             color: #e1e8f0;
             line-height: 1.6;
+            padding: 10px 0;
         }
 
         .email-container {
             max-width: 600px;
             margin: 0 auto;
             background: rgba(15, 23, 42, 0.8);
-            border: 1px solid rgba(59, 130, 246, 0.2);
+            border: 1px solid rgba(234, 179, 8, 0.2);
             border-radius: 12px;
             backdrop-filter: blur(10px);
             overflow: hidden;
-            box-shadow: 0 8px 25px rgba(29, 78, 216, 0.15);
+            box-shadow: 0 8px 25px rgba(234, 179, 8, 0.15);
         }
 
         .email-header {
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(29, 78, 216, 0.2) 100%);
+            background: linear-gradient(135deg, rgba(234, 179, 8, 0.1) 0%, rgba(161, 98, 7, 0.2) 100%);
             padding: 40px 30px;
             text-align: center;
-            border-bottom: 1px solid rgba(59, 130, 246, 0.1);
+            border-bottom: 1px solid rgba(234, 179, 8, 0.1);
         }
 
         .email-logo {
             max-width: 160px;
             height: auto;
-            filter: drop-shadow(0 4px 12px rgba(29, 78, 216, 0.3));
+            filter: drop-shadow(0 4px 12px rgba(234, 179, 8, 0.3));
             margin-bottom: 20px;
         }
 
         .email-title {
             font-size: 2rem;
             font-weight: 600;
-            color: #3b82f6;
+            color: #eab308;
             margin-bottom: 10px;
             letter-spacing: -0.02em;
         }
@@ -64,8 +65,8 @@
         }
 
         .welcome-card {
-            background: rgba(29, 78, 216, 0.1);
-            border: 1px solid rgba(59, 130, 246, 0.2);
+            background: rgba(234, 179, 8, 0.1);
+            border: 1px solid rgba(234, 179, 8, 0.2);
             border-radius: 8px;
             padding: 20px;
             margin: 20px 0;
@@ -81,13 +82,13 @@
         .welcome-title {
             font-size: 1.3rem;
             font-weight: 600;
-            color: #60a5fa;
+            color: #facc15;
             margin-bottom: 10px;
         }
 
         .code-container {
             background: rgba(0, 0, 0, 0.3);
-            border: 2px solid #3b82f6;
+            border: 2px solid #eab308;
             border-radius: 8px;
             padding: 25px;
             text-align: center;
@@ -102,21 +103,21 @@
             left: 0;
             width: 100%;
             height: 1px;
-            background: linear-gradient(90deg, transparent, #3b82f6, transparent);
+            background: linear-gradient(90deg, transparent, #eab308, transparent);
         }
 
         .verification-code {
             font-size: 2.2rem;
             font-weight: 700;
-            color: #60a5fa;
+            color: #facc15;
             letter-spacing: 8px;
             font-family: "Inter", monospace;
-            text-shadow: 0 2px 4px rgba(29, 78, 216, 0.3);
+            text-shadow: 0 2px 4px rgba(234, 179, 8, 0.3);
         }
 
         .info-card {
             background: rgba(15, 23, 42, 0.6);
-            border: 1px solid rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(234, 179, 8, 0.1);
             border-radius: 8px;
             padding: 20px;
             margin: 20px 0;
@@ -147,14 +148,14 @@
 
         .feature-list li::before {
             content: "✓";
-            color: #3b82f6;
+            color: #eab308;
             font-weight: bold;
             font-size: 1.1rem;
         }
 
         .email-footer {
             background: rgba(15, 23, 42, 0.6);
-            border-top: 1px solid rgba(59, 130, 246, 0.1);
+            border-top: 1px solid rgba(234, 179, 8, 0.1);
             padding: 25px;
             text-align: center;
             color: #64748b;
@@ -168,7 +169,7 @@
         }
 
         .text-highlight {
-            color: #60a5fa;
+            color: #facc15;
             font-weight: 500;
         }
 
@@ -201,8 +202,7 @@
 <body>
     <div class="email-container">
         <div class="email-header">
-            <img src="{{ $message->embed(public_path('logos/twodrive_png.png')) }}" alt="TwoDrive Logo" class="email-logo"
-                style="max-width: 120px; width: 100%; height: auto; display: block; margin: 0 auto;">
+            <img src="{{ $message->embed(public_path('logos/twodrive_png.png')) }}" alt="TwoDrive Logo" class="email-logo" style="max-width: 120px; width: 100%; height: auto; display: block; margin: 0 auto;">
             <h1 class="email-title">¡Verifica tu correo!</h1>
             <p class="email-subtitle">Hola <span class="text-highlight">{{ $userName }}</span>,</p>
         </div>
@@ -215,13 +215,12 @@
                 <div class="verification-code">{{ $code }}</div>
             </div>
 
-
             <div class="info-title">
                 📋 Instrucciones
             </div>
             <ul class="feature-list">
                 <li>Ingresa este código en la página de verificación</li>
-                <li>Este código expira en <span class="text-highlight"> 10 minutos</span></li>
+                <li>Este código expira en<span class="text-highlight">&#8203;10 minutos</span></li>
                 <li>Una vez verificado y activado el 2FA, tendrás la posibilidad de eliminar tu cuenta</li>
                 <li>Si no solicitaste este registro, puedes ignorar este email</li>
             </ul>

@@ -42,7 +42,7 @@ class DeleteAccountController
             $code = rand(100000, 999999);
             $user->update([
                 'account_deletion_code' => $this->aes->encrypt($code),
-                'account_deletion_expires_at' => now()->addMinutes(30)
+                'account_deletion_expires_at' => now()->addMinutes(10)
             ]);
 
             try {

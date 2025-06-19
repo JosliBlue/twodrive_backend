@@ -18,6 +18,7 @@
             background: #0a0f1c;
             color: #e1e8f0;
             line-height: 1.6;
+            padding: 10px 0;
         }
 
         .email-container {
@@ -271,7 +272,7 @@
                 </div>
                 <ul class="feature-list">
                     <li>Ingresa este código en la página de confirmación</li>
-                    <li>Este código expira en <span class="text-highlight">30 minutos</span></li>
+                    <li>Este código expira en<span class="text-highlight">&#8203;10 minutos</span></li>
                     <li>Una vez confirmado, la eliminación será inmediata</li>
                     <li>Si no solicitaste esta acción, puedes ignorar este email</li>
                 </ul>
