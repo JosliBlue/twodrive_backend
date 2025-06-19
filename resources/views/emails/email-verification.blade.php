@@ -4,129 +4,233 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verificación de Email</title>
+    <title>Verificación de Email - TwoDrive</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: "Inter", sans-serif;
+            background: #0a0f1c;
+            color: #e1e8f0;
             line-height: 1.6;
-            color: #333;
+        }
+
+        .email-container {
             max-width: 600px;
             margin: 0 auto;
-            padding: 20px;
-            background-color: #f4f4f4;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(29, 78, 216, 0.15);
         }
 
-        .container {
-            background-color: #ffffff;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-        }
-
-        .header {
+        .email-header {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(29, 78, 216, 0.2) 100%);
+            padding: 40px 30px;
             text-align: center;
-            margin-bottom: 30px;
+            border-bottom: 1px solid rgba(59, 130, 246, 0.1);
         }
 
-        .logo {
-            width: 150px;
+        .email-logo {
+            max-width: 160px;
             height: auto;
+            filter: drop-shadow(0 4px 12px rgba(29, 78, 216, 0.3));
             margin-bottom: 20px;
         }
 
-        h1 {
-            color: #2c3e50;
+        .email-title {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #3b82f6;
+            margin-bottom: 10px;
+            letter-spacing: -0.02em;
+        }
+
+        .email-subtitle {
+            font-size: 1.1rem;
+            color: #94a3b8;
+            font-weight: 400;
+        }
+
+        .email-content {
+            padding: 30px;
+        }
+
+        .welcome-card {
+            background: rgba(29, 78, 216, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .welcome-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .welcome-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #60a5fa;
             margin-bottom: 10px;
         }
 
         .code-container {
-            background-color: #f8f9fa;
-            border: 2px solid #28a745;
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid #3b82f6;
+            border-radius: 8px;
+            padding: 25px;
+            text-align: center;
+            margin: 25px 0;
+            position: relative;
+        }
+
+        .code-container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #3b82f6, transparent);
+        }
+
+        .verification-code {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #60a5fa;
+            letter-spacing: 8px;
+            font-family: "Inter", monospace;
+            text-shadow: 0 2px 4px rgba(29, 78, 216, 0.3);
+        }
+
+        .info-card {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(59, 130, 246, 0.1);
             border-radius: 8px;
             padding: 20px;
-            text-align: center;
             margin: 20px 0;
         }
 
-        .code {
-            font-size: 32px;
+        .info-title {
+            font-weight: 600;
+            color: #e1e8f0;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+            margin: 15px 0;
+        }
+
+        .feature-list li {
+            padding: 8px 0;
+            color: #94a3b8;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .feature-list li::before {
+            content: "✓";
+            color: #3b82f6;
             font-weight: bold;
-            color: #28a745;
-            letter-spacing: 5px;
-            font-family: 'Courier New', monospace;
+            font-size: 1.1rem;
         }
 
-        .info {
-            background-color: #d1ecf1;
-            border: 1px solid #bee5eb;
-            border-radius: 5px;
-            padding: 15px;
-            margin: 20px 0;
-            color: #0c5460;
-        }
-
-        .footer {
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid #eee;
+        .email-footer {
+            background: rgba(15, 23, 42, 0.6);
+            border-top: 1px solid rgba(59, 130, 246, 0.1);
+            padding: 25px;
             text-align: center;
-            color: #666;
-            font-size: 14px;
+            color: #64748b;
+            font-size: 0.9rem;
         }
 
-        .welcome {
-            background-color: #d4edda;
-            border: 1px solid #c3e6cb;
-            border-radius: 5px;
-            padding: 15px;
-            margin: 20px 0;
-            color: #155724;
+        .footer-brand {
+            color: #3b82f6;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .text-highlight {
+            color: #60a5fa;
+            font-weight: 500;
+        }
+
+        @media (max-width: 640px) {
+            .email-container {
+                margin: 10px;
+                border-radius: 8px;
+            }
+
+            .email-header {
+                padding: 30px 20px;
+            }
+
+            .email-content {
+                padding: 20px;
+            }
+
+            .email-title {
+                font-size: 1.7rem;
+            }
+
+            .verification-code {
+                font-size: 1.8rem;
+                letter-spacing: 6px;
+            }
         }
     </style>
 </head>
 
 <body>
-    <div class="container">
-        <div class="header">
-            <img src="{{ asset('logos/twodrive_png.png') }}" alt="Logo" class="logo">
-            <h1>¡Bienvenido a TwoDrive!</h1>
-            <p>Hola <strong>{{ $userName }}</strong>,</p>
+    <div class="email-container">
+        <div class="email-header">
+            <img src="{{ $message->embed(public_path('logos/twodrive_png.png')) }}" alt="TwoDrive Logo" class="email-logo"
+                style="max-width: 120px; width: 100%; height: auto; display: block; margin: 0 auto;">
+            <h1 class="email-title">¡Verifica tu correo!</h1>
+            <p class="email-subtitle">Hola <span class="text-highlight">{{ $userName }}</span>,</p>
         </div>
 
-        <div class="welcome">
-            <h3>🎉 ¡Gracias por registrarte!</h3>
-            <p>Tu cuenta ha sido creada exitosamente. Para completar el proceso de registro y activar tu cuenta,
-                necesitamos verificar tu dirección de email.</p>
-        </div>
+        <div class="email-content">
+            <p>Has iniciado el proceso para verificar tu correo</p>
+            <p>Tu código de verificación es:</p>
 
-        <p>Tu código de verificación es:</p>
+            <div class="code-container">
+                <div class="verification-code">{{ $code }}</div>
+            </div>
 
-        <div class="code-container">
-            <div class="code">{{ $code }}</div>
-        </div>
 
-        <div class="info">
-            <strong>📋 Instrucciones:</strong>
-            <ul>
+            <div class="info-title">
+                📋 Instrucciones
+            </div>
+            <ul class="feature-list">
                 <li>Ingresa este código en la página de verificación</li>
-                <li>Este código expira en <strong>30 minutos</strong></li>
-                <li>Una vez verificado, podrás acceder a todas las funcionalidades</li>
+                <li>Este código expira en <span class="text-highlight"> 10 minutos</span></li>
+                <li>Una vez verificado y activado el 2FA, tendrás la posibilidad de eliminar tu cuenta</li>
                 <li>Si no solicitaste este registro, puedes ignorar este email</li>
             </ul>
+
         </div>
 
-        <p><strong>¿Qué puedes hacer después de verificar tu cuenta?</strong></p>
-        <ul>
-            <li>✅ Iniciar sesión de forma segura</li>
-            <li>✅ Activar autenticación de dos factores</li>
-            <li>✅ Acceder a todas las funcionalidades del sistema</li>
-            <li>✅ Gestionar tu perfil y configuraciones</li>
-        </ul>
-
-        <div class="footer">
-            <p>Si tienes problemas con la verificación, contacta a nuestro equipo de soporte.</p>
+        <div class="email-footer">
             <p>Este es un email automático, por favor no respondas a este mensaje.</p>
-            <p><strong>Sistema de Seguridad TwoDrive</strong></p>
+            <p class="footer-brand">Sistema de Seguridad TwoDrive</p>
             <p>© {{ date('Y') }} Todos los derechos reservados</p>
         </div>
     </div>

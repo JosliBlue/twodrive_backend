@@ -4,128 +4,298 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Confirmación de Eliminación de Cuenta</title>
+    <title>Confirmación de Eliminación de Cuenta - TwoDrive</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+        * {
             margin: 0;
-            padding: 20px;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        .container {
+        body {
+            font-family: "Inter", sans-serif;
+            background: #0a0f1c;
+            color: #e1e8f0;
+            line-height: 1.6;
+        }
+
+        .email-container {
             max-width: 600px;
             margin: 0 auto;
-            background-color: white;
-            border-radius: 8px;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
             overflow: hidden;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 8px 25px rgba(239, 68, 68, 0.15);
         }
 
-        .header {
-            background-color: #dc3545;
-            color: white;
-            padding: 30px;
+        .email-header {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(220, 38, 38, 0.2) 100%);
+            padding: 40px 30px;
             text-align: center;
+            border-bottom: 1px solid rgba(239, 68, 68, 0.2);
         }
 
-        .header h1 {
-            margin: 0;
-            font-size: 24px;
+        .email-logo {
+            max-width: 160px;
+            height: auto;
+            filter: drop-shadow(0 4px 12px rgba(29, 78, 216, 0.3));
+            margin-bottom: 20px;
         }
 
-        .content {
+        .email-title {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #ef4444;
+            margin-bottom: 10px;
+            letter-spacing: -0.02em;
+        }
+
+        .email-subtitle {
+            font-size: 1.1rem;
+            color: #94a3b8;
+            font-weight: 400;
+        }
+
+        .email-content {
             padding: 30px;
         }
 
-        .code-box {
-            background-color: #f8f9fa;
-            border: 2px solid #dc3545;
+        .danger-card {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
             border-radius: 8px;
             padding: 20px;
+            margin: 20px 0;
             text-align: center;
-            margin: 20px 0;
         }
 
-        .code {
-            font-size: 28px;
-            font-weight: bold;
-            color: #dc3545;
-            letter-spacing: 3px;
-            font-family: 'Courier New', monospace;
+        .danger-icon {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            display: block;
         }
 
-        .warning {
-            background-color: #fff3cd;
-            border-left: 4px solid #ffc107;
-            padding: 15px;
-            margin: 20px 0;
-            border-radius: 4px;
+        .danger-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #f87171;
+            margin-bottom: 10px;
         }
 
-        .footer {
-            background-color: #f8f9fa;
+        .code-container {
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid #ef4444;
+            border-radius: 8px;
+            padding: 25px;
+            text-align: center;
+            margin: 25px 0;
+            position: relative;
+        }
+
+        .code-container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #ef4444, transparent);
+        }
+
+        .deletion-code {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #f87171;
+            letter-spacing: 8px;
+            font-family: "Inter", monospace;
+            text-shadow: 0 2px 4px rgba(239, 68, 68, 0.3);
+        }
+
+        .info-card {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(59, 130, 246, 0.1);
+            border-radius: 8px;
             padding: 20px;
-            text-align: center;
-            font-size: 14px;
-            color: #6c757d;
+            margin: 20px 0;
         }
 
-        .btn {
-            display: inline-block;
-            padding: 12px 24px;
-            background-color: #dc3545;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            margin: 10px 0;
+        .info-title {
+            font-weight: 600;
+            color: #e1e8f0;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+            margin: 15px 0;
+        }
+
+        .feature-list li {
+            padding: 8px 0;
+            color: #94a3b8;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .feature-list li::before {
+            content: "✓";
+            color: #3b82f6;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .warning-card {
+            background: rgba(251, 146, 60, 0.1);
+            border: 1px solid rgba(251, 146, 60, 0.3);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .warning-title {
+            font-weight: 600;
+            color: #fb923c;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .consequences-list {
+            list-style: none;
+            padding: 0;
+            margin: 15px 0;
+        }
+
+        .consequences-list li {
+            padding: 8px 0;
+            color: #fbbf24;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .consequences-list li::before {
+            content: "✗";
+            color: #ef4444;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .email-footer {
+            background: rgba(15, 23, 42, 0.6);
+            border-top: 1px solid rgba(239, 68, 68, 0.2);
+            padding: 25px;
+            text-align: center;
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        .footer-brand {
+            color: #3b82f6;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .text-highlight {
+            color: #60a5fa;
+            font-weight: 500;
+        }
+
+        .text-danger {
+            color: #f87171;
+            font-weight: 600;
+        }
+
+        .text-warning {
+            color: #fbbf24;
+            font-weight: 500;
+        }
+
+        @media (max-width: 640px) {
+            .email-container {
+                margin: 10px;
+                border-radius: 8px;
+            }
+
+            .email-header {
+                padding: 30px 20px;
+            }
+
+            .email-content {
+                padding: 20px;
+            }
+
+            .email-title {
+                font-size: 1.7rem;
+            }
+
+            .deletion-code {
+                font-size: 1.8rem;
+                letter-spacing: 6px;
+            }
         }
     </style>
 </head>
 
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>⚠️ Confirmación de Eliminación de Cuenta</h1>
+    <div class="email-container">
+        <div class="email-header">
+            <img src="{{ $message->embed(public_path('logos/twodrive_png.png')) }}" alt="TwoDrive Logo" class="email-logo"
+                style="max-width: 120px; width: 100%; height: auto; display: block; margin: 0 auto;">
+            <h1 class="email-title">Confirmación de Eliminación</h1>
+            <p class="email-subtitle">Hola <span class="text-highlight">{{ $userName }}</span>,</p>
         </div>
 
-        <div class="content">
-            <h2>Hola {{ $userName }},</h2>
+        <div class="email-content">
+            <p>Has solicitado eliminar tu cuenta permanentemente. Esta acción es <span
+                    class="text-danger">irreversible</span> y eliminará completamente todos tus datos del sistema.</p>
+            <p>Para <span class="text-danger">confirmar la eliminación</span> de tu cuenta, utiliza el siguiente código
+                de verificación:</p>
 
-            <p>Has solicitado eliminar tu cuenta permanentemente. Esta acción es <strong>irreversible</strong> y
-                resultará en:</p>
-
-            <ul>
-                <li>Eliminación completa de tu perfil</li>
-                <li>Eliminación de todos tus archivos PDF</li>
-                <li>Eliminación de todos los permisos compartidos</li>
-                <li>Eliminación del historial de inicios de sesión</li>
-            </ul>
-
-            <div class="warning">
-                <strong>⚠️ ADVERTENCIA:</strong> Una vez confirmada la eliminación, no podrás recuperar tu cuenta ni tus
-                archivos. Esta acción es permanente e irreversible.
+            <div class="code-container">
+                <div class="deletion-code">{{ $deletionCode }}</div>
             </div>
 
-            <p>Para <strong>confirmar la eliminación</strong> de tu cuenta, utiliza el siguiente código de verificación:
-            </p>
-
-            <div class="code-box">
-                <div class="code">{{ $deletionCode }}</div>
-                <p style="margin: 10px 0 0 0; font-size: 14px; color: #6c757d;">
-                    Este código expira en 30 minutos
-                </p>
+            <div class="info-card">
+                <div class="info-title">
+                    📋 Instrucciones
+                </div>
+                <ul class="feature-list">
+                    <li>Ingresa este código en la página de confirmación</li>
+                    <li>Este código expira en <span class="text-highlight">30 minutos</span></li>
+                    <li>Una vez confirmado, la eliminación será inmediata</li>
+                    <li>Si no solicitaste esta acción, puedes ignorar este email</li>
+                </ul>
             </div>
 
-            <p><strong>Si no solicitaste eliminar tu cuenta, ignora este email.</strong> Tu cuenta permanecerá activa y
-                segura.</p>
+            <div class="warning-card">
+                <div class="warning-title">
+                    ⚠️ Consecuencias de la Eliminación
+                </div>
+                <ul class="consequences-list">
+                    <li>Eliminación completa de tu perfil</li>
+                    <li>Eliminación de todos tus archivos PDF</li>
+                    <li>Eliminación de todos los permisos compartidos</li>
+                    <li>Eliminación del historial de inicios de sesión</li>
+                </ul>
+            </div>
 
-            <p>Si tienes dudas o necesitas ayuda, contacta con nuestro equipo de soporte antes de proceder.</p>
         </div>
 
-        <div class="footer">
-            <p>Este es un email automático, por favor no responder.</p>
-            <p>&copy; {{ date('Y') }} {{ config('app.name') }}. Todos los derechos reservados.</p>
+        <div class="email-footer">
+            <p>Si no solicitaste eliminar tu cuenta, ignora este email. Tu cuenta permanecerá activa y segura.</p>
+            <p>Este es un email automático, por favor no respondas a este mensaje.</p>
+            <p class="footer-brand">Sistema de Seguridad TwoDrive</p>
+            <p>© {{ date('Y') }} Todos los derechos reservados</p>
         </div>
     </div>
 </body>

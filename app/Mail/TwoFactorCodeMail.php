@@ -30,7 +30,7 @@ class TwoFactorCodeMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Código de Verificación de Dos Factores',
+            subject: 'Inicio de sesion con 2FA',
         );
     }
 

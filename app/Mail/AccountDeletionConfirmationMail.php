@@ -31,7 +31,7 @@ class AccountDeletionConfirmationMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Confirmación de Eliminación de Cuenta',
+            subject: 'Codigo eliminacion de cuenta',
         );
     }
 

@@ -38,7 +38,6 @@ Route::middleware([IsUserAuth::class])->group(function () {
     // Rutas de verificación de cuenta
     Route::prefix('account')->group(function () {
         Route::get('/request-email-verification', [VerifyAccountController::class, 'requestEmailVerification']);
-        Route::get('/resend-email-verification', [VerifyAccountController::class, 'resendEmailVerification']);
         Route::post('/verify-email', [VerifyAccountController::class, 'verifyEmail']);
 
         // Rutas de eliminación de cuenta
