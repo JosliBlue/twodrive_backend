@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\{User, LoginLog};
-use App\Mail\{TwoFactorCodeMail, EmailVerificationMail};
+use App\Mail\TwoFactorCodeMail;
 use App\Utils\AESEncryption;
 use Illuminate\Http\{JsonResponse, Request};
 use Illuminate\Support\Facades\{Log, Mail, Validator};
