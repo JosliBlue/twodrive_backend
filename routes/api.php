@@ -4,41 +4,64 @@ use App\Http\Controllers\_Api;
 use App\Http\Controllers\_CifradoAES;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AuthTwoFactorController;
+use App\Http\Controllers\DeleteAccountController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\VerifyAccountController;
 use App\Http\Middleware\IsUserAuth;
 use Illuminate\Support\Facades\Route;
+
+// =============================================================================
+// RUTAS PÚBLICAS
+// =============================================================================
 
 // Rutas de autenticación (públicas)
 Route::prefix('auth')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login']);
-    Route::post('/resend-email-verification', [AuthController::class, 'resendEmailVerification']);
-    Route::post('/2fa/verify-two-factor', [AuthTwoFactorController::class, 'verify']);
 });
+Route::post('/2fa/verify-two-factor', [AuthTwoFactorController::class, 'verify']);
+
+// =============================================================================
+// RUTAS PROTEGIDAS (REQUIEREN AUTENTICACIÓN)
+// =============================================================================
 
 Route::middleware([IsUserAuth::class])->group(function () {
-    // Rutas de autenticación protegidas
-    Route::prefix('auth')->group(function () {
-        Route::get('/profile', [AuthController::class, 'profile']);
-        Route::post('/request-email-verification', [AuthController::class, 'requestEmailVerification']);
-        Route::post('/verify-email-authenticated', [AuthController::class, 'verifyEmail']);
-        Route::put('/change-password', [AuthController::class, 'changePassword']);
-        Route::post('/logout', [AuthController::class, 'logout']);
+
+    // Rutas de usuario
+    Route::prefix('user')->group(function () {
+        Route::get('/profile', [UserController::class, 'profile']);
+        Route::put('/change-password', [UserController::class, 'changePassword']);
+    });
+
+    Route::post('auth/logout', [AuthController::class, 'logout']);
+
+    // Rutas de verificación de cuenta
+    Route::prefix('account')->group(function () {
+        Route::post('/request-email-verification', [VerifyAccountController::class, 'requestEmailVerification']);
+        Route::post('/resend-email-verification', [VerifyAccountController::class, 'resendEmailVerification']);
+        Route::post('/verify-email', [VerifyAccountController::class, 'verifyEmail']);
 
         // Rutas de eliminación de cuenta
-        Route::post('/request-account-deletion', [AuthController::class, 'requestAccountDeletion']);
-        Route::post('/confirm-account-deletion', [AuthController::class, 'confirmAccountDeletion']);
+        Route::post('/request-deletion', [DeleteAccountController::class, 'requestAccountDeletion']);
+        Route::post('/confirm-deletion', [DeleteAccountController::class, 'confirmAccountDeletion']);
+    });
 
-        // Rutas de Two Factor Authentication
-        Route::post('/2fa/enable', [AuthTwoFactorController::class, 'enable']);
-        Route::post('/2fa/disable', [AuthTwoFactorController::class, 'disable']);
+    // Rutas de Two Factor Authentication
+    Route::prefix('2fa')->group(function () {
+        Route::post('/enable', [AuthTwoFactorController::class, 'enable']);
+        Route::post('/disable', [AuthTwoFactorController::class, 'disable']);
     });
 });
 
-// RUTAS API DE INFORMACION
+// =============================================================================
+// RUTAS DE INFORMACIÓN
+// =============================================================================
 Route::get('/', [_Api::class, 'version']);
 Route::get('/routes', [_Api::class, 'routes']);
 
-// RUTAS API DE TESTING (solo disponibles en entorno de desarrollo)
+// =============================================================================
+// RUTAS DE TESTING Y UTILIDADES (SOLO ENTORNO DE DESARROLLO)
+// =============================================================================
 if (app()->environment('local')) {
     Route::prefix('cifrado')->group(function () {
         Route::post('/cifrar', [_CifradoAES::class, 'cifrar']);
