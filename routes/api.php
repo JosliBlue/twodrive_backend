@@ -27,13 +27,13 @@ Route::post('/2fa/verify-two-factor', [AuthTwoFactorController::class, 'verify']
 
 Route::middleware([IsUserAuth::class])->group(function () {
 
+    Route::post('auth/logout', [AuthController::class, 'logout']);
+
     // Rutas de usuario
     Route::prefix('user')->group(function () {
         Route::get('/profile', [UserController::class, 'profile']);
         Route::put('/change-password', [UserController::class, 'changePassword']);
     });
-
-    Route::post('auth/logout', [AuthController::class, 'logout']);
 
     // Rutas de verificación de cuenta
     Route::prefix('account')->group(function () {
