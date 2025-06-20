@@ -260,17 +260,17 @@
                 <div class="verification-code">{{ $code }}</div>
             </div>
 
-            <div class="info-card">
-                <div class="info-title">
-                    📋 Instrucciones
-                </div>
-                <ul class="feature-list">
-                    <li>Ingresa este código en la página de autenticación</li>
-                    <li>Este código expira en<span class="text-highlight">&#8203;10 minutos</span></li>
-                    <li>Solo úsalo si realmente iniciaste sesión</li>
-                    <li>Si no solicitaste este código, puedes ignorar este email</li>
-                </ul>
+
+            <div class="info-title">
+                📋 Instrucciones
             </div>
+            <ul class="feature-list">
+                <li>Ingresa este código en la página de autenticación</li>
+                <li>Este código expira en<span class="text-highlight">&#8203;10 minutos</span></li>
+                <li>Solo úsalo si realmente iniciaste sesión</li>
+                <li>Si no solicitaste este código, puedes ignorar este email</li>
+            </ul>
+
         </div>
 
         <div class="email-footer">

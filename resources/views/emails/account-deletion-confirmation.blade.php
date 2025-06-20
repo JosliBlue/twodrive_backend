@@ -266,17 +266,17 @@
                 <div class="deletion-code">{{ $deletionCode }}</div>
             </div>
 
-            <div class="info-card">
-                <div class="info-title">
-                    📋 Instrucciones
-                </div>
-                <ul class="feature-list">
-                    <li>Ingresa este código en la página de confirmación</li>
-                    <li>Este código expira en<span class="text-highlight">&#8203;10 minutos</span></li>
-                    <li>Una vez confirmado, la eliminación será inmediata</li>
-                    <li>Si no solicitaste esta acción, puedes ignorar este email</li>
-                </ul>
+
+            <div class="info-title">
+                📋 Instrucciones
             </div>
+            <ul class="feature-list">
+                <li>Ingresa este código en la página de confirmación</li>
+                <li>Este código expira en<span class="text-highlight">&#8203;10 minutos</span></li>
+                <li>Una vez confirmado, la eliminación será inmediata</li>
+                <li>Si no solicitaste esta acción, puedes ignorar este email</li>
+            </ul>
+
 
             <div class="warning-card">
                 <div class="warning-title">
