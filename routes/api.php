@@ -5,6 +5,7 @@ use App\Http\Controllers\_CifradoAES;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AuthTwoFactorController;
 use App\Http\Controllers\DeleteAccountController;
+use App\Http\Controllers\LoginLogController;
 use App\Http\Controllers\PdfController;
 use App\Http\Controllers\SharedPdfController;
 use App\Http\Controllers\UserController;
@@ -35,6 +36,7 @@ Route::middleware([IsUserAuth::class])->group(function () {
     Route::prefix('user')->group(function () {
         Route::get('/profile', [UserController::class, 'profile']);
         Route::put('/change-password', [UserController::class, 'changePassword']);
+        Route::get('/login-attempts', [LoginLogController::class, 'myLoginAttempts']);
     });
 
     // Rutas de verificación de cuenta

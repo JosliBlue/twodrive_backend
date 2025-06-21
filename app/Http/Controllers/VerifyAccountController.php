@@ -37,12 +37,12 @@ class VerifyAccountController
 
             $code = rand(100000, 999999);
             $user->update([
-                'email_verification_code' => $this->aes->encrypt($code),
+                'email_verification_code' => $this->aes->encrypt($this->aes->encrypt($code)),
                 'email_verification_expires_at' => now()->addMinutes(10)
             ]);
 
             try {
-                Mail::to($this->aes->decrypt($user->email))->send(new EmailVerificationMail($code, $this->aes->decrypt($user->email)));
+                Mail::to($this->aes->decrypt($this->aes->decrypt($user->email)))->send(new EmailVerificationMail($code, $this->aes->decrypt($this->aes->decrypt($user->email))));
 
                 return response()->json([
                     'status' => true,
@@ -105,7 +105,7 @@ class VerifyAccountController
                 ], 400);
             }
 
-            if (!$user->email_verification_code || $user->email_verification_code !== $this->aes->encrypt($request->verification_code)) {
+            if (!$user->email_verification_code || $user->email_verification_code !== $this->aes->encrypt($this->aes->encrypt($request->verification_code))) {
                 return response()->json([
                     'status' => false,
                     'message' => 'Código inválido'
@@ -144,7 +144,7 @@ class VerifyAccountController
     {
         $response = [
             'id' => $user->id,
-            'email' => $this->aes->decrypt($user->email),
+            'email' => $this->aes->decrypt($this->aes->decrypt($user->email)),
             'email_verified' => (bool) $user->email_verified,
             'two_factor_enabled' => (bool) $user->two_factor_enabled,
         ];

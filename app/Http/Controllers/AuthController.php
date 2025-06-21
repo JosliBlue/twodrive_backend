@@ -40,7 +40,7 @@ class AuthController
         }
 
         // Encriptamos el email solo después de validar su formato
-        $encryptedEmail = $this->aes->encrypt($request->email);
+        $encryptedEmail = $this->aes->encrypt($this->aes->encrypt($request->email));
 
         // Validamos unicidad del email encriptado
         $uniqueValidator = Validator::make(['email' => $encryptedEmail], [
@@ -57,7 +57,7 @@ class AuthController
         try {
             $user = User::create([
                 'email' => $encryptedEmail,
-                'password' => $this->aes->encrypt($request->password)
+                'password' => $this->aes->encrypt($this->aes->encrypt($request->password))
             ]);
 
             return response()->json([
@@ -99,12 +99,12 @@ class AuthController
             ], 422);
         }
 
-        $user = User::where('email', $this->aes->encrypt($request->email))->first();
+        $user = User::where('email', $this->aes->encrypt($this->aes->encrypt($request->email)))->first();
 
         // Verifica si el usuario existe y si la contraseña coincide
-        if (!$user || $user->password !== $this->aes->encrypt($request->password)) {
+        if (!$user || $user->password !== $this->aes->encrypt($this->aes->encrypt($request->password))) {
             // Log del intento fallido
-            if ($attemptUser = User::where('email', $this->aes->encrypt($request->email))->first()) {
+            if ($attemptUser = User::where('email', $this->aes->encrypt($this->aes->encrypt($request->email)))->first()) {
                 $this->logLoginAttempt($attemptUser, $request, 'failed');
             }
             return response()->json([
@@ -116,12 +116,12 @@ class AuthController
         if ($user->two_factor_enabled) {
             $code = rand(100000, 999999); // Genera un código aleatorio de 6 dígitos
             $user->update([
-                'two_factor_code' => $this->aes->encrypt($code),
+                'two_factor_code' => $this->aes->encrypt($this->aes->encrypt($code)),
                 'two_factor_expires_at' => now()->addMinutes(10)
             ]);
 
             try {
-                Mail::to($this->aes->decrypt($user->email))->send(new TwoFactorCodeMail($code, $this->aes->decrypt($user->email)));
+                Mail::to($this->aes->decrypt($this->aes->decrypt($user->email)))->send(new TwoFactorCodeMail($code, $this->aes->decrypt($this->aes->decrypt($user->email))));
             } catch (\Exception $e) {
                 Log::warning('Error enviando código de verificación 2FA: ' . $e->getMessage());
                 return response()->json([
@@ -185,7 +185,7 @@ class AuthController
     {
         $response = [
             'id' => $user->id,
-            'email' => $this->aes->decrypt($user->email),
+            'email' => $this->aes->decrypt($this->aes->decrypt($user->email)),
             'email_verified' => (bool) $user->email_verified,
             'two_factor_enabled' => (bool) $user->two_factor_enabled,
         ];
@@ -195,9 +195,9 @@ class AuthController
     {
         LoginLog::create([
             'user_id' => $user->id,
-            'ip_address' => $this->aes->encrypt($request->ip()),
+            'ip_address' => $this->aes->encrypt($this->aes->encrypt($request->ip())),
             'user_agent' => $request->userAgent(),
-            'status' => $this->aes->encrypt($status),
+            'status' => $this->aes->encrypt($this->aes->encrypt($status)),
             'logged_in_at' => now(),
         ]);
     }

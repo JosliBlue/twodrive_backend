@@ -78,9 +78,9 @@ class AuthTwoFactorController
         ]);
 
         try {
-            $user = User::where('email', $this->aes->encrypt($request->email))->first();
+            $user = User::where('email', $this->aes->encrypt($this->aes->encrypt($request->email)))->first();
 
-            if (!$user || is_null($user->two_factor_code) || $this->aes->encrypt($request->two_factor_code) !== $user->two_factor_code) {
+            if (!$user || is_null($user->two_factor_code) || $this->aes->encrypt($this->aes->encrypt($request->two_factor_code)) !== $user->two_factor_code) {
                 return response()->json([
                     'status' => false,
                     'message' => 'Código de verificación inválido.'
@@ -107,7 +107,7 @@ class AuthTwoFactorController
                 'token' => $token,
                 'user' => [
                     'id' => $user->id,
-                    'email' => $this->aes->decrypt($user->email),
+                    'email' => $this->aes->decrypt($this->aes->decrypt($user->email)),
                     'email_verified' => $user->email_verified ? true : false,
                     'two_factor_enabled' => $user->two_factor_enabled ? true : false,
                 ]

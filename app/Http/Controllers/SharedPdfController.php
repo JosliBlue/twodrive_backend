@@ -12,11 +12,11 @@ use Illuminate\Support\Facades\Validator;
 
 class SharedPdfController
 {
-    private $aesEncryption;
+    private $aes;
 
     public function __construct()
     {
-        $this->aesEncryption = new AESEncryption();
+        $this->aes = new AESEncryption();
     }
 
     /**
@@ -39,7 +39,7 @@ class SharedPdfController
                 }
                 return [
                     'id' => $pdf->id,
-                    'filename' => $this->aesEncryption->decrypt($pdf->filename),
+                    'filename' => $this->aes->decrypt($this->aes->decrypt($pdf->filename)),
                     'updated_at' => $pdf->updated_at,
                     'can_view' => $permission->can_view,
                     'can_download' => $permission->can_download
@@ -97,7 +97,7 @@ class SharedPdfController
                 $sharedWith = $pdf->permissions->map(function ($permission) {
                     return [
                         'permission_id' => $permission->id,
-                        'shared_with_email' => $this->aesEncryption->decrypt($permission->sharedWith->email),
+                        'shared_with_email' => $this->aes->decrypt($this->aes->decrypt($permission->sharedWith->email)),
                         'can_view' => $permission->can_view,
                         'can_download' => $permission->can_download,
                         'shared_at' => $permission->created_at
@@ -106,7 +106,7 @@ class SharedPdfController
 
                 return [
                     'id' => $pdf->id,
-                    'filename' => $this->aesEncryption->decrypt($pdf->filename),
+                    'filename' => $this->aes->decrypt($this->aes->decrypt($pdf->filename)),
                     'updated_at' => $pdf->updated_at,
                     'total_shares' => $sharedWith->count(),
                     'shared_with' => $sharedWith
@@ -171,7 +171,7 @@ class SharedPdfController
             }
 
             // Buscar el usuario con quien se quiere compartir
-            $shareWithUser = User::where('email', $this->aesEncryption->encrypt($shareWithEmail))->first();
+            $shareWithUser = User::where('email', $this->aes->encrypt($this->aes->encrypt($shareWithEmail)))->first();
 
             if (!$shareWithUser) {
                 return response()->json([
@@ -214,7 +214,7 @@ class SharedPdfController
                 'data' => [
                     'permission_id' => $permission->id,
                     'pdf_id' => $pdfId,
-                    'pdf_filename' => $this->aesEncryption->decrypt($pdf->filename),
+                    'pdf_filename' => $this->aes->decrypt($this->aes->decrypt($pdf->filename)),
                     'shared_with_email' => $shareWithEmail,
                     'can_view' => $canView,
                     'can_download' => $canDownload,
@@ -282,8 +282,8 @@ class SharedPdfController
                 'message' => 'Permisos actualizados exitosamente',
                 'data' => [
                     'permission_id' => $permission->id,
-                    'pdf_filename' => $this->aesEncryption->decrypt($permission->pdf->filename),
-                    'shared_with_email' => $this->aesEncryption->decrypt($permission->sharedWith->email),
+                    'pdf_filename' => $this->aes->decrypt($this->aes->decrypt($permission->pdf->filename)),
+                    'shared_with_email' => $this->aes->decrypt($this->aes->decrypt($permission->sharedWith->email)),
                     'can_view' => $canView,
                     'can_download' => $canDownload,
                     'updated_at' => $permission->updated_at
@@ -338,7 +338,7 @@ class SharedPdfController
             }
 
             // Buscar el usuario con quien está compartido
-            $shareWithUser = User::where('email', $this->aesEncryption->encrypt($shareWithEmail))->first();
+            $shareWithUser = User::where('email', $this->aes->encrypt($this->aes->encrypt($shareWithEmail)))->first();
 
             if (!$shareWithUser) {
                 return response()->json([
@@ -366,7 +366,7 @@ class SharedPdfController
                 'message' => 'Acceso al PDF revocado exitosamente',
                 'data' => [
                     'pdf_id' => $pdfId,
-                    'pdf_filename' => $this->aesEncryption->decrypt($pdf->filename),
+                    'pdf_filename' => $this->aes->decrypt($this->aes->decrypt($pdf->filename)),
                     'revoked_from_email' => $shareWithEmail,
                     'revoked_at' => now()
                 ]
@@ -421,7 +421,7 @@ class SharedPdfController
                 'message' => 'Todos los accesos al PDF han sido revocados exitosamente',
                 'data' => [
                     'pdf_id' => $pdfId,
-                    'pdf_filename' => $this->aesEncryption->decrypt($pdf->filename),
+                    'pdf_filename' => $this->aes->decrypt($this->aes->decrypt($pdf->filename)),
                     'revoked_shares' => $sharesCount,
                     'revoked_at' => now()
                 ]

@@ -13,11 +13,11 @@ use setasign\Fpdi\Tcpdf\Fpdi;
 
 class PdfController
 {
-    private $aesEncryption;
+    private $aes;
 
     public function __construct()
     {
-        $this->aesEncryption = new AESEncryption();
+        $this->aes = new AESEncryption();
     }
 
     /**
@@ -34,7 +34,7 @@ class PdfController
             $ownPdfs = $user->pdfs()->get()->map(function ($pdf) {
                 return [
                     'id' => $pdf->id,
-                    'filename' => $this->aesEncryption->decrypt($pdf->filename), // Desencriptar para mostrar
+                    'filename' => $this->aes->decrypt($this->aes->decrypt($pdf->filename)), // Desencriptar para mostrar
                     'deleted_at' => $pdf->deleted_at ? $pdf->deleted_at : false,
                     'updated_at' => $pdf->updated_at
                 ];
@@ -75,7 +75,7 @@ class PdfController
             $trashedPdfs = $user->pdfs()->onlyTrashed()->get()->map(function ($pdf) {
                 return [
                     'id' => $pdf->id,
-                    'filename' => $this->aesEncryption->decrypt($pdf->filename),
+                    'filename' => $this->aes->decrypt($this->aes->decrypt($pdf->filename)),
                     'deleted_at' => $pdf->deleted_at,
                     'updated_at' => $pdf->updated_at
                 ];
@@ -132,7 +132,7 @@ class PdfController
             $originalName = pathinfo($uploadedFile->getClientOriginalName(), PATHINFO_FILENAME);
 
             // Procesar y guardar archivo
-            $encryptedFilename = $this->aesEncryption->encrypt($originalName) . '.pdf';
+            $encryptedFilename = $this->aes->encrypt($this->aes->encrypt($originalName)) . '.pdf';
             $protectedContent = $this->applyPdfPassword(
                 file_get_contents($uploadedFile->getPathname()),
                 $password
@@ -142,9 +142,9 @@ class PdfController
 
             // Crear registro en BD
             $pdf = Pdf::create([
-                'filename' => $this->aesEncryption->encrypt($originalName),
+                'filename' => $this->aes->encrypt($this->aes->encrypt($originalName)),
                 'user_id' => $user->id,
-                'pdf_password' => $this->aesEncryption->encrypt($password),
+                'pdf_password' => $this->aes->encrypt($this->aes->encrypt($password)),
             ]);
 
             return response()->json([
@@ -211,7 +211,7 @@ class PdfController
                 'message' => 'PDF eliminado exitosamente',
                 'data' => [
                     'id' => $pdf->id,
-                    'filename' => $this->aesEncryption->decrypt($pdf->filename),
+                    'filename' => $this->aes->decrypt($this->aes->decrypt($pdf->filename)),
                     'deleted_at' => $pdf->deleted_at
                 ]
             ], 200);
@@ -263,7 +263,7 @@ class PdfController
                 'message' => 'PDF restaurado exitosamente',
                 'data' => [
                     'id' => $pdf->id,
-                    'filename' => $this->aesEncryption->decrypt($pdf->filename),
+                    'filename' => $this->aes->decrypt($this->aes->decrypt($pdf->filename)),
                     'restored_at' => now()
                 ]
             ], 200);
@@ -301,8 +301,8 @@ class PdfController
             }
 
             // Obtener información antes de eliminar
-            $filename = $this->aesEncryption->decrypt($pdf->filename);
-            $encryptedFilename = $this->aesEncryption->encrypt($filename) . '.pdf';
+            $filename = $this->aes->decrypt($this->aes->decrypt($pdf->filename));
+            $encryptedFilename = $this->aes->encrypt($this->aes->encrypt($filename)) . '.pdf';
 
             // Eliminar archivo físico del storage
             if (Storage::exists($encryptedFilename)) {
@@ -351,8 +351,8 @@ class PdfController
             }
 
             $pdf = $accessInfo['pdf'];
-            $filename = $this->aesEncryption->decrypt($pdf->filename);
-            $encryptedFilename = $this->aesEncryption->encrypt($filename) . '.pdf';
+            $filename = $this->aes->decrypt($this->aes->decrypt($pdf->filename));
+            $encryptedFilename = $this->aes->encrypt($this->aes->encrypt($filename)) . '.pdf';
 
             if (!Storage::exists($encryptedFilename)) {
                 return response()->json([
@@ -406,8 +406,8 @@ class PdfController
             }
 
             $pdf = $accessInfo['pdf'];
-            $filename = $this->aesEncryption->decrypt($pdf->filename);
-            $encryptedFilename = $this->aesEncryption->encrypt($filename) . '.pdf';
+            $filename = $this->aes->decrypt($this->aes->decrypt($pdf->filename));
+            $encryptedFilename = $this->aes->encrypt($this->aes->encrypt($filename)) . '.pdf';
 
             if (!Storage::exists($encryptedFilename)) {
                 return response()->json([

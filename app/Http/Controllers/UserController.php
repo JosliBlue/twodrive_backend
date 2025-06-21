@@ -63,14 +63,14 @@ class UserController
                 ], 422);
             }
 
-            if ($this->aes->encrypt($request->current_password) !== $user->password) {
+            if ($this->aes->encrypt($this->aes->encrypt($request->current_password)) !== $user->password) {
                 return response()->json([
                     'status' => false,
                     'message' => 'Contraseña actual ingresada incorrecta'
                 ], 422);
             }
 
-            $user->update(['password' => $this->aes->encrypt($request->new_password)]);
+            $user->update(['password' => $this->aes->encrypt($this->aes->encrypt($request->new_password))]);
 
             return response()->json([
                 'status' => true,
@@ -90,7 +90,7 @@ class UserController
     {
         $response = [
             'id' => $user->id,
-            'email' => $this->aes->decrypt($user->email),
+            'email' => $this->aes->decrypt($this->aes->decrypt($user->email)),
             'email_verified' => (bool) $user->email_verified,
             'two_factor_enabled' => (bool) $user->two_factor_enabled,
         ];

@@ -41,12 +41,12 @@ class DeleteAccountController
 
             $code = rand(100000, 999999);
             $user->update([
-                'account_deletion_code' => $this->aes->encrypt($code),
+                'account_deletion_code' => $this->aes->encrypt($this->aes->encrypt($code)),
                 'account_deletion_expires_at' => now()->addMinutes(10)
             ]);
 
             try {
-                Mail::to($this->aes->decrypt($user->email))->send(new AccountDeletionConfirmationMail($code, $this->aes->decrypt($user->email)));
+                Mail::to($this->aes->decrypt($this->aes->decrypt($user->email)))->send(new AccountDeletionConfirmationMail($code, $this->aes->decrypt($this->aes->decrypt($user->email))));
             } catch (\Exception $e) {
                 Log::warning('Error enviando email de confirmación de eliminación: ' . $e->getMessage());
                 return response()->json([
@@ -98,7 +98,7 @@ class DeleteAccountController
                 ], 403);
             }
 
-            if (!$user->account_deletion_code || $user->account_deletion_code !== $this->aes->encrypt($request->deletion_code)) {
+            if (!$user->account_deletion_code || $user->account_deletion_code !== $this->aes->encrypt($this->aes->encrypt($request->deletion_code))) {
                 return response()->json([
                     'status' => false,
                     'message' => 'Código de eliminación inválido'
