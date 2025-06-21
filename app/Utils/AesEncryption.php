@@ -17,13 +17,13 @@ class AESEncryption
         // FORMA CORRECTA: Leer desde el archivo de configuración.
         $this->encryptionKey = config('app.clave_cifrado_aes');
 
-        if (!$this->encryptionKey || strlen($this->encryptionKey) !== 32) {
-            throw new \Exception('La clave de cifrado AES no está configurada correctamente en config/custom_encryption.php o .env. Debe ser una cadena hexadecimal de 32 caracteres.');
+        if (!$this->encryptionKey || strlen($this->encryptionKey) !== 64) {
+            throw new \Exception('La clave de cifrado AES no está configurada correctamente en config/app.php o .env. Debe ser una cadena hexadecimal de 64 caracteres para AES-256.');
         }
     }
 
     /**
-     * Cifra un texto plano usando AES-128.
+     * Cifra un texto plano usando AES-256.
      */
     public function encrypt(string $plaintext): ?string
     {
@@ -38,7 +38,8 @@ class AESEncryption
             foreach ($blocks as $block) {
                 $state = $this->bytesToState(str_split($block));
                 $this->addRoundKey($state, $this->roundKeys[0]);
-                for ($round = 1; $round < 10; $round++) {
+                // AES-256 usa 14 rondas en lugar de 10
+                for ($round = 1; $round < 14; $round++) {
                     $this->subBytes($state);
                     $this->shiftRows($state);
                     $this->mixColumns($state);
@@ -46,7 +47,7 @@ class AESEncryption
                 }
                 $this->subBytes($state);
                 $this->shiftRows($state);
-                $this->addRoundKey($state, $this->roundKeys[10]);
+                $this->addRoundKey($state, $this->roundKeys[14]);
                 $encryptedHex .= $this->stateToHex($state);
             }
             return $encryptedHex;
@@ -58,7 +59,7 @@ class AESEncryption
 
 
     /**
-     * Descifra un texto cifrado usando AES-128.
+     * Descifra un texto cifrado usando AES-256.
      * @param string $ciphertext Texto cifrado como cadena hexadecimal.
      * @return string|null El texto plano o null si hay error.
      */
@@ -79,11 +80,12 @@ class AESEncryption
                 $blockBytes = hex2bin($blockHex);
                 $state = $this->bytesToState(str_split($blockBytes));
 
-                // Ronda inicial (inversa) - usa la última clave de ronda
-                $this->addRoundKey($state, $this->roundKeys[10]);
+                // Ronda inicial (inversa) - usa la última clave de ronda (14 para AES-256)
+                $this->addRoundKey($state, $this->roundKeys[14]);
 
                 // CORRECCIÓN: Este es el orden correcto de las operaciones inversas
-                for ($round = 9; $round >= 1; $round--) {
+                // AES-256 usa 14 rondas en lugar de 10
+                for ($round = 13; $round >= 1; $round--) {
                     $this->invShiftRows($state);
                     $this->invSubBytes($state);
                     $this->addRoundKey($state, $this->roundKeys[$round]);
@@ -154,7 +156,7 @@ class AESEncryption
         [0xa0, 0xe0, 0x3b, 0x4d, 0xae, 0x2a, 0xf5, 0xb0, 0xc8, 0xeb, 0xbb, 0x3c, 0x83, 0x53, 0x99, 0x61],
         [0x17, 0x2b, 0x04, 0x7e, 0xba, 0x77, 0xd6, 0x26, 0xe1, 0x69, 0x14, 0x63, 0x55, 0x21, 0x0c, 0x7d]
     ];
-    // La tabla Rcon para la expansión de la clave
+    // La tabla Rcon para la expansión de la clave (extendida para AES-256)
     private const RCON = [
         [0x00, 0x00, 0x00, 0x00],
         [0x01, 0x00, 0x00, 0x00],
@@ -248,36 +250,66 @@ class AESEncryption
         }
     }
 
-    // --- EXPANSIÓN DE LA CLAVE ---
+    // --- EXPANSIÓN DE LA CLAVE PARA AES-256 ---
 
     private function keyExpansion(array $keyBytes)
     {
         $this->roundKeys = [];
-        $keyMatrix = $this->bytesToState($keyBytes);
-        $this->roundKeys[0] = $keyMatrix;
 
-        for ($i = 1; $i <= 10; $i++) {
-            $prevKey = $this->roundKeys[$i - 1];
+        // Para AES-256, la clave inicial son 8 columnas (32 bytes)
+        // Dividimos en dos matrices de estado de 4x4
+        $keyMatrix1 = $this->bytesToState(array_slice($keyBytes, 0, 16));
+        $keyMatrix2 = $this->bytesToState(array_slice($keyBytes, 16, 16));
+
+        // Las primeras dos claves de ronda son las matrices iniciales
+        $this->roundKeys[0] = $keyMatrix1;
+        $this->roundKeys[1] = $keyMatrix2;
+
+        // Generamos las 13 claves de ronda restantes (necesitamos 15 en total: 0-14)
+        for ($i = 2; $i <= 14; $i++) {
+            $prevKey1 = $this->roundKeys[$i - 2];
+            $prevKey2 = $this->roundKeys[$i - 1];
             $newKey = array_fill(0, 4, array_fill(0, 4, 0));
 
-            // Tomamos la última columna de la clave anterior
-            $word = [$prevKey[0][3], $prevKey[1][3], $prevKey[2][3], $prevKey[3][3]];
+            if ($i % 2 == 0) {
+                // Para claves pares: aplicamos la transformación completa
+                $roundIndex = $i / 2;
 
-            // RotWord, SubWord y XOR con Rcon
-            $word = $this->rotWord($word);
-            $word = $this->subWord($word);
-            $rcon = self::RCON[$i];
-            for ($j = 0; $j < 4; $j++) {
-                $word[$j] ^= $rcon[$j];
+                // Tomamos la última columna de la clave anterior
+                $word = [$prevKey2[0][3], $prevKey2[1][3], $prevKey2[2][3], $prevKey2[3][3]];
+
+                // RotWord, SubWord y XOR con Rcon
+                $word = $this->rotWord($word);
+                $word = $this->subWord($word);
+
+                if ($roundIndex <= 7) {
+                    $rcon = self::RCON[$roundIndex];
+                    for ($j = 0; $j < 4; $j++) {
+                        $word[$j] ^= $rcon[$j];
+                    }
+                }
+
+                // Calculamos la nueva clave de ronda
+                for ($r = 0; $r < 4; $r++) {
+                    $newKey[$r][0] = $prevKey1[$r][0] ^ $word[$r];
+                    $newKey[$r][1] = $prevKey1[$r][1] ^ $newKey[$r][0];
+                    $newKey[$r][2] = $prevKey1[$r][2] ^ $newKey[$r][1];
+                    $newKey[$r][3] = $prevKey1[$r][3] ^ $newKey[$r][2];
+                }
+            } else {
+                // Para claves impares: solo SubWord, sin RotWord ni Rcon
+                $word = [$prevKey2[0][3], $prevKey2[1][3], $prevKey2[2][3], $prevKey2[3][3]];
+                $word = $this->subWord($word);
+
+                // Calculamos la nueva clave de ronda
+                for ($r = 0; $r < 4; $r++) {
+                    $newKey[$r][0] = $prevKey1[$r][0] ^ $word[$r];
+                    $newKey[$r][1] = $prevKey1[$r][1] ^ $newKey[$r][0];
+                    $newKey[$r][2] = $prevKey1[$r][2] ^ $newKey[$r][1];
+                    $newKey[$r][3] = $prevKey1[$r][3] ^ $newKey[$r][2];
+                }
             }
 
-            // Calculamos la nueva clave de ronda
-            for ($r = 0; $r < 4; $r++) {
-                $newKey[$r][0] = $prevKey[$r][0] ^ $word[$r];
-                $newKey[$r][1] = $prevKey[$r][1] ^ $newKey[$r][0];
-                $newKey[$r][2] = $prevKey[$r][2] ^ $newKey[$r][1];
-                $newKey[$r][3] = $prevKey[$r][3] ^ $newKey[$r][2];
-            }
             $this->roundKeys[$i] = $newKey;
         }
     }

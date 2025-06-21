@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 class _Api
 {
     /**
-     * API Version Information
+     * API Information
      *
      * Endpoint Público
      *
@@ -29,7 +29,7 @@ class _Api
     }
 
     /**
-     * API Routes Documentation
+     * API Routes
      *
      * Endpoint Público
      *

@@ -185,7 +185,7 @@ class AuthController
     {
         $response = [
             'id' => $user->id,
-            'email' => $user->email,
+            'email' => $this->aes->decrypt($user->email),
             'email_verified' => (bool) $user->email_verified,
             'two_factor_enabled' => (bool) $user->two_factor_enabled,
         ];

@@ -15,10 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
 
-            $table->string('original_filename');
-            $table->string('encrypted_filename');
-            $table->string('path');
-            $table->timestamp('uploaded_at')->useCurrent();
+            $table->string('filename');
 
             $table->string('pdf_password')->nullable(); // Guardar cifrada
 

@@ -10,28 +10,30 @@ use Illuminate\Support\Facades\Validator;
 
 class _CifradoAES
 {
-    private $aesEncryption;
+    private $aes;
 
     /**
      * Constructor - Instancia la clase AESEncryption
      *
      * Inicializa la instancia de la clase AESEncryption que contiene la implementación
-     * manual del algoritmo AES-128 para propósitos educativos y de prueba.
+     * manual del algoritmo AES-256 para propósitos educativos y de prueba.
      */
     public function __construct()
     {
-        $this->aesEncryption = new AESEncryption();
+        $this->aes = new AESEncryption();
     }
 
     /**
-     * Cifra un texto usando AES-128
+     * Cifra un texto usando AES-256
      *
      * Endpoint Público
      *
-     * Este método permite cifrar un texto plano utilizando el algoritmo AES-128 implementado manualmente.
+     * Este método permite cifrar un texto plano utilizando el algoritmo AES-256 implementado manualmente.
      *
      * Es una implementación educativa/de prueba para demostrar el funcionamiento del cifrado AES hecho a mano.
      * NO debe utilizarse en producción debido a limitaciones de seguridad.
+     *
+     * Aqui solo lo hace una vez, asi que repetir otra vez para verificar el doble cifrado
      *
      * @param Request $request
      * @return JsonResponse
@@ -59,7 +61,7 @@ class _CifradoAES
             $textoPlano = $request->input('texto');
 
             // Cifrar el texto usando la instancia de AESEncryption
-            $textoCifrado = $this->aesEncryption->encrypt($textoPlano);
+            $textoCifrado = $this->aes->encrypt($textoPlano);
 
             if ($textoCifrado === null) {
                 return response()->json([
@@ -91,15 +93,16 @@ class _CifradoAES
     }
 
     /**
-     * Descifra un texto usando AES-128
+     * Descifra un texto usando AES-256
      *
      * Endpoint Público
      *
      * Este método permite descifrar un texto previamente cifrado con el método de cifrado manual.
      *
-     * Utiliza la implementación AES-128 hecha a mano para demostrar el proceso de descifrado.
+     * Utiliza la implementación AES-256 hecha a mano para demostrar el proceso de descifrado.
      * Solo funciona con textos cifrados por el método "cifrar" de este mismo controlador.
      *
+     * Aqui solo lo hace una vez, asi que repetir otra vez para verificar el doble cifrado
      * @param Request $request
      * @return JsonResponse
      */
@@ -134,7 +137,7 @@ class _CifradoAES
             }
 
             // Descifrar el texto usando la instancia de AESEncryption
-            $textoDescifrado = $this->aesEncryption->decrypt($textoCifrado);
+            $textoDescifrado = $this->aes->decrypt($textoCifrado);
 
             if ($textoDescifrado === null) {
                 return response()->json([
@@ -170,7 +173,7 @@ class _CifradoAES
      *
      * Endpoint Público
      *
-     * Este método proporciona información técnica completa sobre la implementación AES-128 manual.
+     * Este método proporciona información técnica completa sobre la implementación AES-256 manual.
      *
      * Incluye detalles sobre el algoritmo, limitaciones de seguridad, casos de uso recomendados
      * y advertencias importantes sobre su uso exclusivamente educativo/de prueba.
@@ -185,7 +188,7 @@ class _CifradoAES
             'data' => [
                 // ALGORITMO: Especifica la variante de AES utilizada
                 // Opciones: AES-128, AES-192, AES-256 (según tamaño de clave)
-                'algoritmo' => 'AES-128',
+                'algoritmo' => 'AES-256',
 
                 // MODO DE OPERACIÓN: Define cómo se procesan múltiples bloques
                 // Opciones comunes: ECB, CBC, CFB, OFB, CTR, GCM, CCM
@@ -194,11 +197,11 @@ class _CifradoAES
 
                 // RONDAS: Número de iteraciones del algoritmo AES
                 // AES-128: 10 rondas, AES-192: 12 rondas, AES-256: 14 rondas
-                'rondas' => '10 rondas de transformación',
+                'rondas' => '14 rondas de transformación',
 
                 // TAMAÑO DE CLAVE: Longitud de la clave de cifrado
                 // AES-128: 128 bits (16 bytes), AES-192: 192 bits (24 bytes), AES-256: 256 bits (32 bytes)
-                'tamaño_clave' => '128 bits (16 bytes)',
+                'tamaño_clave' => '256 bits (32 bytes)',
 
                 // TAMAÑO DE BLOQUE: Siempre 128 bits (16 bytes) para todas las variantes AES
                 // Este valor es fijo en el estándar AES
@@ -222,9 +225,18 @@ class _CifradoAES
                 // INFORMACIÓN TÉCNICA ADICIONAL
                 'detalles_tecnicos' => [
                     'sbox' => 'S-Box estándar AES (sustitución Rijndael)',
-                    'expansion_clave' => 'KeyExpansion con Rcon para 11 claves de ronda (0-10)',
+                    'expansion_clave' => 'KeyExpansion con Rcon para 15 claves de ronda (0-14)',
                     'operaciones_galois' => 'Multiplicación en GF(2^8) para MixColumns',
-                    'padding_validacion' => 'Validación estricta de PKCS7 en descifrado'
+                    'padding_validacion' => 'Validación estricta de PKCS7 en descifrado',
+                    'expansion_aes256' => 'Algoritmo específico AES-256 con 8 palabras de clave inicial'
+                ],
+
+                // VENTAJAS DE AES-256
+                'ventajas_aes256' => [
+                    'seguridad_mayor' => 'Mayor resistencia a ataques de fuerza bruta',
+                    'quantum_resistant' => 'Mejor preparación contra computación cuántica',
+                    'estandar_gobierno' => 'Requerido por muchos estándares gubernamentales',
+                    'clave_larga' => 'Espacio de claves de 2^256 (vs 2^128 en AES-128)'
                 ],
 
                 // LIMITACIONES DE SEGURIDAD
@@ -232,14 +244,24 @@ class _CifradoAES
                     'sin_iv' => 'No utiliza Vector de Inicialización (IV)',
                     'patrones_repetitivos' => 'Bloques idénticos producen cifrado idéntico',
                     'sin_autenticacion' => 'No incluye verificación de integridad (MAC)',
-                    'implementacion_academica' => 'No optimizada para resistir ataques de canal lateral'
+                    'implementacion_academica' => 'No optimizada para resistir ataques de canal lateral',
+                    'rendimiento' => 'Más lento que AES-128 debido a mayor número de rondas'
                 ],
 
                 // CASOS DE USO RECOMENDADOS
                 'uso_recomendado' => [
-                    'educacion' => 'Aprendizaje de conceptos criptográficos',
-                    'prototipado' => 'Desarrollo y pruebas iniciales',
-                    'demostraciones' => 'Ejemplos académicos y didácticos'
+                    'educacion' => 'Aprendizaje de conceptos criptográficos avanzados',
+                    'prototipado' => 'Desarrollo y pruebas de sistemas de alta seguridad',
+                    'demostraciones' => 'Ejemplos académicos de cifrado fuerte',
+                    'investigacion' => 'Análisis de algoritmos criptográficos'
+                ],
+
+                // COMPARACIÓN CON AES-128
+                'comparacion_aes128' => [
+                    'rondas' => 'AES-256: 14 rondas vs AES-128: 10 rondas',
+                    'clave' => 'AES-256: 256 bits vs AES-128: 128 bits',
+                    'seguridad' => 'AES-256: ~2^254 operaciones vs AES-128: ~2^126 operaciones',
+                    'rendimiento' => 'AES-256: ~40% más lento que AES-128'
                 ],
 
                 // ADVERTENCIA DE SEGURIDAD

@@ -107,7 +107,7 @@ class AuthTwoFactorController
                 'token' => $token,
                 'user' => [
                     'id' => $user->id,
-                    'email' => $user->email,
+                    'email' => $this->aes->decrypt($user->email),
                     'email_verified' => $user->email_verified ? true : false,
                     'two_factor_enabled' => $user->two_factor_enabled ? true : false,
                 ]
